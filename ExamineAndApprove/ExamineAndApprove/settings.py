@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'common',
     'rest_framework',
-    'application'
+    'application',
     'corsheaders',
 ]
 
@@ -55,7 +55,6 @@ MIDDLEWARE = [
 ]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = (
     '*'
 )
