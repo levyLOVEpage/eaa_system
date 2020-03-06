@@ -22,5 +22,4 @@ class Login(APIView):
         token = create_token({'id': user_object.id, 'user': user_object.account})
         queryset.last_login = login_time
         queryset.save()
-        # s.save()
         return Response({"current_user":{"user":user,"user_id":s.data['id'],"login_time":login_time},"status": "success", "message": "登录成功","token":token,"token_prefix":""})
