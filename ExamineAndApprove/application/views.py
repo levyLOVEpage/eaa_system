@@ -7,7 +7,7 @@ import jwt
 import datetime
 from common.extensions.auth import JwtAuthentication,create_token
 from common.code import code
-class Apply(APIView):
+class ApplyList(APIView):
     authentication_classes = []
     def get(self,request,applicant_id,format=None):
         queryset = ApplicantList.objects.filter(applicant_id=applicant_id)
@@ -16,14 +16,14 @@ class Apply(APIView):
                              {'code':code.success_code[0],'msg':code.success_code[1]},
                          'data':s.data
                          })
+class Apply(APIView):
+    authentication_classes = []
     def post(self,request,format=None):
         s = serializers.ApplySerializer(data=request.data)
         if s.is_valid():
             s.save()
-            return({'status':{'code':code.success_code[0],'msg':code.success_code[1]}})
+            return Response({'status':{'code':code.success_code[0],'msg':code.success_code[1]}})
         else:
-            return({'status':{'code':code.error_2004[0],'msg':code.error_2004[1]}})
-
-
+            return Response({'status':{'code':code.error_2004[0],'msg':code.error_2004[1]}})
 
 

@@ -19,5 +19,6 @@ from common import views
 from application import views as application_views
 urlpatterns = [
     path('eaa/login', views.Login.as_view()),
-    re_path(r'^eaa/application/(?P<applicant_id>\w{1,8})$',application_views.Apply.as_view())
+    re_path(r'^eaa/application/(?P<applicant_id>\w{1,8})$',application_views.ApplyList.as_view()),
+    re_path(r'^eaa/application/add_apply$', application_views.Apply.as_view()),
 ]
