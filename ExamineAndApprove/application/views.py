@@ -59,6 +59,10 @@ class PendingList(APIView):
                              'data': s.data,
                              'total': total
                              })
+        else:
+            return Response({'status':
+                                 {'code': code.error_2005[0], 'msg': code.error_2005[1]}
+                             })
 """
 个人apply页面
 """
@@ -70,7 +74,7 @@ class MyApply(APIView):
         role_type = role_info.data['type']
         # 普通员工
         if role_type == 3:
-            queryset = ApplicantList.objects.filter(Q(applicant_id=applicant_id),Q(status_in=["pendingApprove","normalClose","timeoutClose"]))
+            queryset = ApplicantList.objects.filter(Q(applicant_id=applicant_id),Q(status="pendingApprove")|Q(status="normalClose")|Q(status="timeoutClose"))
             total = queryset.count()
             page_obj = LimitOffset()
             page_list = page_obj.paginate_queryset(queryset=queryset, request=request, view=self)
@@ -82,7 +86,7 @@ class MyApply(APIView):
                              })
         # 部门管理员
         elif role_type == 2:
-            queryset = ApplicantList.objects.filter(Q(applicant_id=applicant_id),Q(status_in=["pendingApprove","normalClose","timeoutClose"]))
+            queryset = ApplicantList.objects.filter(Q(applicant_id=applicant_id),Q(status="pendingApprove")|Q(status="normalClose")|Q(status="timeoutClose"))
             total = queryset.count()
             page_obj = LimitOffset()
             page_list = page_obj.paginate_queryset(queryset=queryset, request=request, view=self)
@@ -91,6 +95,10 @@ class MyApply(APIView):
                                  {'code': code.success_code[0], 'msg': code.success_code[1]},
                              'data': s.data,
                              'total': total
+                             })
+        else:
+            return Response({'status':
+                                 {'code': code.error_2005[0], 'msg': code.error_2005[1]}
                              })
 """
 所有申请页面
@@ -103,7 +111,7 @@ class AllApply(APIView):
         role_type = role_info.data['type']
         # 普通管理员
         if role_type == 2:
-            queryset = ApplicantList.objects.filter(Q(reviewer_id=applicant_id)&Q(status_in=["pendingApprove","normalClose","timeoutClose"]))
+            queryset = ApplicantList.objects.filter(Q(reviewer_id=applicant_id),Q(status="pendingApprove")|Q(status="normalClose")|Q(status="timeoutClose"))
             total = queryset.count()
             page_obj = LimitOffset()
             page_list = page_obj.paginate_queryset(queryset=queryset, request=request, view=self)
@@ -115,7 +123,7 @@ class AllApply(APIView):
                              })
         # 总管理员
         elif role_type == 1:
-            queryset = ApplicantList.objects.filter(Q(status_in=["pendingApprove","normalClose","timeoutClose"]))
+            queryset = ApplicantList.objects.filter(Q(status="pendingApprove")|Q(status="normalClose")|Q(status="timeoutClose"))
             total = queryset.count()
             page_obj = LimitOffset()
             page_list = page_obj.paginate_queryset(queryset=queryset, request=request, view=self)
@@ -124,6 +132,10 @@ class AllApply(APIView):
                                  {'code': code.success_code[0], 'msg': code.success_code[1]},
                              'data': s.data,
                              'total': total
+                             })
+        else:
+            return Response({'status':
+                                 {'code': code.error_2005[0], 'msg': code.error_2005[1]}
                              })
 class Apply(APIView):
     authentication_classes = []
