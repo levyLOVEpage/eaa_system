@@ -23,4 +23,5 @@ urlpatterns = [
     re_path(r'^eaa/application/myapply/(?P<applicant_id>\w{1,8})$',application_views.MyApply.as_view()),
     re_path(r'^eaa/application/all/(?P<applicant_id>\w{1,8})$',application_views.AllApply.as_view()),
     re_path(r'^eaa/application/add_apply$', application_views.Apply.as_view()),
+    path('eaa/application/resource',application_views.ResourceList.as_view())
 ]

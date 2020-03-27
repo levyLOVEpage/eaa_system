@@ -1,4 +1,4 @@
-from application.models import ApplicantList
+from application.models import ApplicantList,Device,Department,Region
 from common.models import UserLogin
 from application import serializers
 from common.serializers import UserLoginSerializer
@@ -15,11 +15,12 @@ from django.db.models import Q
 
 
 
-"""
-pending页面
-"""
+
 class PendingList(APIView):
     authentication_classes = []
+    """
+    pending页面
+    """
     def get(self,request,applicant_id,format=None):
         role = UserLogin.objects.filter(id=applicant_id).first()
         role_info = UserLoginSerializer(role)
@@ -63,11 +64,12 @@ class PendingList(APIView):
             return Response({'status':
                                  {'code': code.error_2005[0], 'msg': code.error_2005[1]}
                              })
-"""
-个人apply页面
-"""
+
 class MyApply(APIView):
     authentication_classes = []
+    """
+    个人apply页面
+    """
     def get(self,request,applicant_id,format=None):
         role = UserLogin.objects.filter(id=applicant_id).first()
         role_info = UserLoginSerializer(role)
@@ -100,11 +102,12 @@ class MyApply(APIView):
             return Response({'status':
                                  {'code': code.error_2005[0], 'msg': code.error_2005[1]}
                              })
-"""
-所有申请页面
-"""
+
 class AllApply(APIView):
     authentication_classes = []
+    """
+    所有申请页面
+    """
     def get(self,request,applicant_id,format=None):
         role = UserLogin.objects.filter(id=applicant_id).first()
         role_info = UserLoginSerializer(role)
@@ -137,6 +140,7 @@ class AllApply(APIView):
             return Response({'status':
                                  {'code': code.error_2005[0], 'msg': code.error_2005[1]}
                              })
+
 class Apply(APIView):
     authentication_classes = []
     def post(self,request,format=None):
@@ -148,3 +152,73 @@ class Apply(APIView):
             return Response({'status':{'code':code.error_2004[0],'msg':code.error_2004[1]}})
 
 
+class ResourceList(APIView):
+    authentication_classes = []
+    def get(self,request,*args,**kwargs):
+        device_query=Device.objects.all()
+        device = serializers.DeviceSerializer(device_query,many=True)
+        tree_data = [
+        {
+            'key':'10000000',
+            'title':'中国',
+            'children':[{
+                'key':'33000000',
+                'title':'浙江省',
+                'children':[{
+                    'key':'33000001',
+                    'title':'杭州市',
+                    'children':[
+                        {
+                            'key':'35002',
+                            'title':'AI探头2'
+                        },
+                    ]
+                },
+                    {
+                        'key': '33000002',
+                        'title': '温州市',
+                        'children': [
+                            {
+                                'key': '35003',
+                                'title': 'AI探头3'
+                            },
+                        ]
+                    },
+                    {
+                        'key': '33000003',
+                        'title': '宁波市',
+                        'children': [
+                            {
+                                'key': '35004',
+                                'title': 'AI探头4'
+                            },
+                        ]
+                    },
+                {
+                    'key':'35001',
+                    'title':'AI探头1',
+                }]
+            },{
+                'key':'34000000',
+                'title':'江苏省',
+                'children':[{
+                    'key':'34000001',
+                    'title':'南京市',
+                    'children':[
+                        {
+                            'key':'35006',
+                            'title':'AI探头6'
+                        }
+                    ]
+                },
+                {
+                    'key':'35005',
+                    'title':'AI探头5',
+                }]
+            },{
+                'key':'35007',
+                'title':'AI探头7'
+            }]
+        }
+        ]
+        return Response(tree_data)
