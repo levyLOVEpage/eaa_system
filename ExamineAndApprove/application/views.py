@@ -280,7 +280,13 @@ class ReviewerQuery(APIView):
                 reviewer2 = Department.objects.filter(department_id=r.origin_department_id)
                 reviewer2 = serializers.DepartmentSerializer(reviewer2,many=True)
                 result_list.append({query_list[i]:reviewer2.data})
-        return Response({'data':result_list})
+        return Response({'department_manager':result_list,'global_manager':{
+                    "id": 4,
+                    "department_id": "13",
+                    "department_name": "总裁部",
+                    "manager_id": "2",
+                    "manager_name": "总裁办"
+                }})
 class PendingSubmitDetail(APIView):
     authentication_classes = []
     def get(self,request,process_id,*args,**kwargs):
