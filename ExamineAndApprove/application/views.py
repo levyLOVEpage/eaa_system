@@ -178,6 +178,7 @@ class Apply(APIView):
 
 
 class ResourceList(APIView):
+    authentication_classes = []
     def get(self,request,*args,**kwargs):
         device_query=Device.objects.all()
         device = serializers.DeviceSerializer(device_query,many=True)
