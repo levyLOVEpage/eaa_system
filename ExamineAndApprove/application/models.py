@@ -11,7 +11,7 @@ from django.db import models
 class ApplicantList(models.Model):
     process_id = models.AutoField(primary_key=True)
     type = models.CharField(max_length=255, blank=True, null=True)
-    coordination = models.TextField(blank=True, null=True)  # This field type is a guess.
+    coordination = models.IntegerField(blank=True, null=True)
     origin_process_id = models.IntegerField(blank=True, null=True)
     authority = models.CharField(max_length=255, blank=True, null=True)
     applicant_name = models.CharField(max_length=32, blank=True, null=True)
@@ -26,7 +26,8 @@ class ApplicantList(models.Model):
     reviewer_id = models.CharField(max_length=32, blank=True, null=True)
     applicant_department = models.CharField(max_length=255, blank=True, null=True)
     resource_department = models.CharField(max_length=255, blank=True, null=True)
-    device_list = models.CharField(max_length=255, blank=True, null=True)
+    resource_list = models.CharField(max_length=255, blank=True, null=True)
+    attr_list = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -38,6 +39,7 @@ class Department(models.Model):
     department_id = models.CharField(max_length=255, blank=True, null=True)
     department_name = models.CharField(max_length=255, blank=True, null=True)
     manager_id = models.CharField(max_length=255, blank=True, null=True)
+    manager_name = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         managed = False

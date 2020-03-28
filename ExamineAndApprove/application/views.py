@@ -143,17 +143,41 @@ class AllApply(APIView):
 
 class Apply(APIView):
     authentication_classes = []
+    def put(self,request,*args,**kwargs):
+        obj = ApplicantList.objects.get(process_id=request.data['process_id'])
+        obj.applicant_name = request.data['applicant_name']
+        obj.applicant_id=request.data['applicant_id']
+        obj.apply_time=request.data['apply_time']
+        obj.status='pendingApprove'
+        obj.reviewer_id = request.data['reviewer_id']
+        obj.reviewer_name = request.data['reviewer_name']
+        obj.applicant_department=request.data['applicant_department']
+        obj.save()
+        return Response({'status':{'code':code.success_code[0],'msg':code.success_code[1]}})
     def post(self,request,format=None):
-        s = serializers.ApplySerializer(data=request.data)
-        if s.is_valid():
-            s.save()
-            return Response({'status':{'code':code.success_code[0],'msg':code.success_code[1]}})
+        if request.data['coordination']==True:
+            request.data['coordination']=1
         else:
-            return Response({'status':{'code':code.error_2004[0],'msg':code.error_2004[1]}})
+            request.data['coordination']=0
+        obj = ApplicantList(
+            type=request.data['type'],
+            usage=request.data['usage'],
+            telephone=request.data['telephone'],
+            coordination=request.data['coordination'],
+            origin_process_id=request.data['origin_process_id'],
+            resource_department=request.data['department'],
+            start_time=request.data['start_time'],
+            end_time=request.data['end_time'],
+            authority=request.data['authority'],
+            attr_list=request.data['region'],
+            resource_list=request.data['device_list'],
+            status='pendingSubmit'
+        )
+        obj.save()
+        return Response({'process_id':obj.process_id,'status':{'code':code.success_code[0],'msg':code.success_code[1]}})
 
 
 class ResourceList(APIView):
-    authentication_classes = []
     def get(self,request,*args,**kwargs):
         device_query=Device.objects.all()
         device = serializers.DeviceSerializer(device_query,many=True)
@@ -222,3 +246,58 @@ class ResourceList(APIView):
         }
         ]
         return Response(tree_data)
+
+
+class ResoucreQueryName(APIView):
+    authentication_classes = []
+    def post(self,request,*args,**kwargs):
+        query = request.data['selected_resource']
+        query_list = list(query)
+        result_list = []
+        for i in range(len(query_list)):
+            if len(query_list[i])==5:
+                r = Device.objects.get(device_id=query_list[i])
+                result_list.append({'key':r.device_id,'name':r.device_name,'type':'device'})
+            elif len(query_list[i])==8:
+                r = Region.objects.get(region_id=query_list[i])
+                result_list.append({'key': r.region_id, 'name': r.region_name, 'type': 'region'})
+        return Response({'data':result_list})
+class ReviewerQuery(APIView):
+    authentication_classes = []
+    def post(self,request,*args,**kwargs):
+        query = request.data['selected_resource']
+        query_list = list(query)
+        result_list = []
+        for i in range(len(query_list)):
+            if len(query_list[i])==5:
+                r = Device.objects.get(device_id=query_list[i])
+                reviewer1 = Department.objects.filter(department_id=r.origin_department_id)
+                reviewer1 = serializers.DepartmentSerializer(reviewer1,many=True)
+                result_list.append({query_list[i]:reviewer1.data})
+            elif len(query_list[i])==8:
+                r = Device.objects.get(region_id=query_list[i])
+                reviewer2 = Department.objects.filter(department_id=r.origin_department_id)
+                reviewer2 = serializers.DepartmentSerializer(reviewer2,many=True)
+                result_list.append({query_list[i]:reviewer2.data})
+        return Response({'data':result_list})
+class PendingSubmitDetail(APIView):
+    authentication_classes = []
+    def get(self,request,process_id,*args,**kwargs):
+        detail = ApplicantList.objects.get(process_id=process_id)
+        return Response({
+            'type':detail.type,
+            'usage':detail.usage,
+            'Telephone':detail.telephone,
+            'coordination':detail.coordination,
+            'AuthList':[{
+                'OriginProcessId':detail.origin_process_id,
+                'Department':detail.resource_department,
+                'Period':{
+                    'startTime':detail.start_time,
+                    'endTime':detail.end_time
+                },
+                'Authority':detail.authority,
+                'AttrList':detail.attr_list,
+                'DeviceList':detail.resource_list
+            }]
+        })
