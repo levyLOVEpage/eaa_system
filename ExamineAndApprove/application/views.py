@@ -155,26 +155,30 @@ class Apply(APIView):
         obj.save()
         return Response({'status':{'code':code.success_code[0],'msg':code.success_code[1]}})
     def post(self,request,format=None):
-        if request.data['coordination']==True:
-            request.data['coordination']=1
-        else:
-            request.data['coordination']=0
-        obj = ApplicantList(
-            type=request.data['type'],
-            usage=request.data['usage'],
-            telephone=request.data['telephone'],
-            coordination=request.data['coordination'],
-            origin_process_id=request.data['origin_process_id'],
-            resource_department=request.data['department'],
-            start_time=request.data['start_time'],
-            end_time=request.data['end_time'],
-            authority=request.data['authority'],
-            attr_list=request.data['region'],
-            resource_list=request.data['device_list'],
-            status='pendingSubmit'
-        )
-        obj.save()
-        return Response({'process_id':obj.process_id,'status':{'code':code.success_code[0],'msg':code.success_code[1]}})
+        query = list(request.data['AuthList'])
+        result = []
+        for i in range(len(query)):
+            if query[i]['coordination']==True:
+                query[i]['coordination']=1
+            else:
+                query[i]['coordination']=0
+            obj = ApplicantList(
+                type=query[i]['type'],
+                usage=query[i]['usage'],
+                telephone=query[i]['telephone'],
+                coordination=query[i]['coordination'],
+                origin_process_id=query[i]['origin_process_id'],
+                resource_department=query[i]['department'],
+                start_time=query[i]['start_time'],
+                end_time=query[i]['end_time'],
+                authority=query[i]['authority'],
+                attr_list=query[i]['region'],
+                resource_list=query[i]['device_list'],
+                status='pendingSubmit'
+            )
+            obj.save()
+            result.append(obj.process_id)
+        return Response({'process_id':result,'status':{'code':code.success_code[0],'msg':code.success_code[1]}})
 
 
 class ResourceList(APIView):
@@ -266,21 +270,23 @@ class ResoucreQueryName(APIView):
 class ReviewerQuery(APIView):
     authentication_classes = []
     def post(self,request,*args,**kwargs):
-        query = request.data['selected_resource']
-        query_list = list(query)
-        result_list = []
-        for i in range(len(query_list)):
-            if len(query_list[i])==5:
-                r = Device.objects.get(device_id=query_list[i])
-                reviewer1 = Department.objects.filter(department_id=r.origin_department_id)
-                reviewer1 = serializers.DepartmentSerializer(reviewer1,many=True)
-                result_list.append({query_list[i]:reviewer1.data})
-            elif len(query_list[i])==8:
-                r = Device.objects.get(region_id=query_list[i])
-                reviewer2 = Department.objects.filter(department_id=r.origin_department_id)
-                reviewer2 = serializers.DepartmentSerializer(reviewer2,many=True)
-                result_list.append({query_list[i]:reviewer2.data})
-        return Response({'department_manager':result_list,'global_manager':{
+        department_id = request.data['department_id']
+        query = Department.objects.filter(department_id=department_id)
+        s = serializers.DepartmentSerializer(query,many=True)
+        # query_list = list(query)
+        # result_list = []
+        # for i in range(len(query_list)):
+        #     if len(query_list[i])==5:
+        #         r = Device.objects.get(device_id=query_list[i])
+        #         reviewer1 = Department.objects.filter(department_id=r.origin_department_id)
+        #         reviewer1 = serializers.DepartmentSerializer(reviewer1,many=True)
+        #         result_list.append({query_list[i]:reviewer1.data})
+        #     elif len(query_list[i])==8:
+        #         r = Device.objects.get(region_id=query_list[i])
+        #         reviewer2 = Department.objects.filter(department_id=r.origin_department_id)
+        #         reviewer2 = serializers.DepartmentSerializer(reviewer2,many=True)
+        #         result_list.append({query_list[i]:reviewer2.data})
+        return Response({'department_manager':s.data,'global_manager':{
                     "id": 4,
                     "department_id": "13",
                     "department_name": "总裁部",
