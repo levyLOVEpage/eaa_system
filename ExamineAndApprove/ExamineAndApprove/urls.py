@@ -24,7 +24,7 @@ urlpatterns = [
     re_path(r'^eaa/application/all/(?P<applicant_id>\w{1,8})$',application_views.AllApply.as_view()),
     re_path(r'^eaa/application/add_apply$', application_views.Apply.as_view()),
     re_path(r'^eaa/application/resource/(?P<department_id>\w{1,8})$',application_views.ResourceList.as_view()),
-    path('eaa/application/resource/name',application_views.ResoucreQueryName.as_view()),
+    path('eaa/application/name',application_views.ResoucreQueryName.as_view()),
     re_path(r'^eaa/application/pendingsubmit/(?P<process_id>\w{1,8})$',application_views.PendingSubmitDetail.as_view()),
     path('eaa/application/reviewer',application_views.ReviewerQuery.as_view())
 ]

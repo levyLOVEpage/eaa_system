@@ -325,6 +325,7 @@ class ResoucreQueryName(APIView):
                 r = Region.objects.get(region_id=query_list[i])
                 result_list.append({'key': r.region_id, 'name': r.region_name, 'type': 'region'})
         return Response({'data':result_list})
+
 class ReviewerQuery(APIView):
     authentication_classes = []
     def post(self,request,*args,**kwargs):
@@ -373,3 +374,5 @@ class PendingSubmitDetail(APIView):
             # }]
             "AuthList":detail.auth_list
         })
+
+
