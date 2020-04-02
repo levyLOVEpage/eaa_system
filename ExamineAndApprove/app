@@ -58,30 +58,3 @@ class Device(models.Model):
     class Meta:
         managed = False
         db_table = 'device'
-
-
-class Region(models.Model):
-    region_id = models.CharField(primary_key=True, max_length=255)
-    region_name = models.CharField(max_length=255, blank=True, null=True)
-    region_type = models.CharField(max_length=255, blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'region'
-
-
-class UserLogin(models.Model):
-    id = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=16, blank=True, null=True)
-    account = models.CharField(max_length=16, blank=True, null=True)
-    password = models.CharField(max_length=16, blank=True, null=True)
-    create_time = models.DateTimeField(blank=True, null=True)
-    last_login = models.DateTimeField(blank=True, null=True)
-    active = models.IntegerField(blank=True, null=True)
-    department_name = models.CharField(max_length=16, blank=True, null=True)
-    department_id = models.CharField(max_length=16, blank=True, null=True)
-    type = models.IntegerField(blank=True, null=True)
-
-    class Meta:
-        managed = False
-        db_table = 'user_login'

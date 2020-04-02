@@ -29,3 +29,8 @@ def create_token(payload,timeout=30):
     payload['exp']=datetime.datetime.utcnow()+datetime.timedelta(days=timeout)
     token = jwt.encode(payload=payload,key=salt,algorithm='HS256',headers=headers).decode('utf-8')
     return token
+
+def decode_token(token):
+    salt = settings.SECRET_KEY
+    payload=jwt.decode(token,salt,True)
+    return payload

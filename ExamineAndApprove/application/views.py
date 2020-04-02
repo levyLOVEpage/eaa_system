@@ -7,20 +7,17 @@ from rest_framework.response import Response
 from django.db import connection
 import jwt
 import datetime
-from common.extensions.auth import JwtAuthentication,create_token
+from common.extensions.auth import JwtAuthentication,create_token,decode_token
 from common.code import code
 from common.extensions.pagination import LimitOffset
 from django.db.models import Q
-
-
-
-
+from rest_framework import request
 
 class PendingList(APIView):
-    authentication_classes = []
     """
     pending页面
     """
+    authentication_classes = []
     def get(self,request,applicant_id,format=None):
         role = UserLogin.objects.filter(id=applicant_id).first()
         role_info = UserLoginSerializer(role)
@@ -66,7 +63,6 @@ class PendingList(APIView):
                              })
 
 class MyApply(APIView):
-    authentication_classes = []
     """
     个人apply页面
     """
@@ -104,7 +100,6 @@ class MyApply(APIView):
                              })
 
 class AllApply(APIView):
-    authentication_classes = []
     """
     所有申请页面
     """
@@ -142,11 +137,8 @@ class AllApply(APIView):
                              })
 
 class Apply(APIView):
-    authentication_classes = []
     def put(self,request,*args,**kwargs):
         obj = ApplicantList.objects.get(process_id=request.data['process_id'])
-        obj.applicant_name = request.data['applicant_name']
-        obj.applicant_id=request.data['applicant_id']
         obj.apply_time=request.data['apply_time']
         obj.status='pendingApprove'
         obj.reviewer_id = request.data['reviewer_id']
@@ -161,6 +153,7 @@ class Apply(APIView):
             request.data['coordination']=0
         obj = ApplicantList(
             type=request.data['type'],
+            applicant_id=request.data['applicant_id'],
             usage=request.data['usage'],
             telephone=request.data['telephone'],
             coordination=request.data['coordination'],
@@ -172,7 +165,6 @@ class Apply(APIView):
 
 
 class ResourceList(APIView):
-    authentication_classes = []
     def get(self,request,department_id,*args,**kwargs):
 
         tree_data = [
@@ -312,7 +304,6 @@ class ResourceList(APIView):
 
 
 class ResoucreQueryName(APIView):
-    authentication_classes = []
     def post(self,request,*args,**kwargs):
         query = request.data['selected_resource']
         query_list = list(query)
@@ -327,7 +318,6 @@ class ResoucreQueryName(APIView):
         return Response({'data':result_list})
 
 class ReviewerQuery(APIView):
-    authentication_classes = []
     def post(self,request,*args,**kwargs):
         department_id = request.data['department_id']
         query = Department.objects.filter(department_id=department_id)
@@ -353,7 +343,6 @@ class ReviewerQuery(APIView):
                     "manager_name": "总裁办"
                 }})
 class PendingSubmitDetail(APIView):
-    authentication_classes = []
     def get(self,request,process_id,*args,**kwargs):
         detail = ApplicantList.objects.get(process_id=process_id)
         return Response({
