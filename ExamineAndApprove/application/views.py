@@ -156,6 +156,7 @@ class Apply(APIView):
         obj = ApplicantList(
             type=request.data['type'],
             applicant_id=request.data['applicant_id'],
+            applicant_name=request.data['applicant_name'],
             apply_time=request.data['apply_time'],
             usage=request.data['usage'],
             telephone=request.data['telephone'],
