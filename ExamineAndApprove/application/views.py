@@ -142,7 +142,6 @@ class Apply(APIView):
     authentication_classes = []
     def put(self,request,*args,**kwargs):
         obj = ApplicantList.objects.get(process_id=request.data['process_id'])
-        obj.apply_time=request.data['apply_time']
         obj.status='pendingApprove'
         obj.reviewer_id = request.data['reviewer_id']
         obj.reviewer_name = request.data['reviewer_name']
@@ -157,6 +156,7 @@ class Apply(APIView):
         obj = ApplicantList(
             type=request.data['type'],
             applicant_id=request.data['applicant_id'],
+            apply_time=request.data['apply_time'],
             usage=request.data['usage'],
             telephone=request.data['telephone'],
             coordination=request.data['coordination'],
