@@ -23,6 +23,7 @@ class ApplicantList(models.Model):
     end_time = models.DateTimeField(blank=True, null=True)
     status = models.CharField(max_length=15, blank=True, null=True)
     reviewer_name = models.CharField(max_length=32, blank=True, null=True)
+    manager_id = models.IntegerField(blank=True, null=True)
     reviewer_id = models.CharField(max_length=1000, blank=True, null=True)
     applicant_department = models.CharField(max_length=255, blank=True, null=True)
     resource_department = models.CharField(max_length=255, blank=True, null=True)

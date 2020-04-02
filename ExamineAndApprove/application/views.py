@@ -141,11 +141,19 @@ class AllApply(APIView):
 class Apply(APIView):
     authentication_classes = []
     def put(self,request,*args,**kwargs):
-        obj = ApplicantList.objects.get(process_id=request.data['process_id'])
-        obj.status='pendingApprove'
-        obj.reviewer_id = request.data['reviewer_id']
-        obj.apply_time = request.data['apply_time']
-        obj.save()
+        if len(request.data['reviewer_id'])==2:
+            obj = ApplicantList.objects.get(process_id=request.data['process_id'])
+            obj.status='pendingApprove'
+            obj.reviewer_id = request.data['reviewer_id'][0]
+            obj.manager_id = request.data['reviewer_id'][1]
+            obj.apply_time = request.data['apply_time']
+            obj.save()
+        elif len(request.data['reviewer_id'])==1:
+            obj = ApplicantList.objects.get(process_id=request.data['process_id'])
+            obj.status = 'pendingApprove'
+            obj.reviewer_id = request.data['reviewer_id'][0]
+            obj.apply_time = request.data['apply_time']
+            obj.save()
         return Response({'status':{'code':code.success_code[0],'msg':code.success_code[1]}})
     def post(self,request,format=None):
         if request.data['coordination']==True:
