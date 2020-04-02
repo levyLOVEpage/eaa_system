@@ -155,30 +155,20 @@ class Apply(APIView):
         obj.save()
         return Response({'status':{'code':code.success_code[0],'msg':code.success_code[1]}})
     def post(self,request,format=None):
-        query = list(request.data['AuthList'])
-        result = []
-        for i in range(len(query)):
-            if query[i]['coordination']==True:
-                query[i]['coordination']=1
-            else:
-                query[i]['coordination']=0
-            obj = ApplicantList(
-                type=query[i]['type'],
-                usage=query[i]['usage'],
-                telephone=query[i]['telephone'],
-                coordination=query[i]['coordination'],
-                origin_process_id=query[i]['origin_process_id'],
-                resource_department=query[i]['department'],
-                start_time=query[i]['start_time'],
-                end_time=query[i]['end_time'],
-                authority=query[i]['authority'],
-                attr_list=query[i]['region'],
-                resource_list=query[i]['device_list'],
-                status='pendingSubmit'
-            )
-            obj.save()
-            result.append(obj.process_id)
-        return Response({'process_id':result,'status':{'code':code.success_code[0],'msg':code.success_code[1]}})
+        if request.data['coordination']==True:
+            request.data['coordination']=1
+        else:
+            request.data['coordination']=0
+        obj = ApplicantList(
+            type=request.data['type'],
+            usage=request.data['usage'],
+            telephone=request.data['telephone'],
+            coordination=request.data['coordination'],
+            auth_list=request.data['AuthList'],
+            status='pendingSubmit'
+        )
+        obj.save()
+        return Response({'process_id':obj.process_id,'status':{'code':code.success_code[0],'msg':code.success_code[1]}})
 
 
 class ResourceList(APIView):
@@ -370,15 +360,16 @@ class PendingSubmitDetail(APIView):
             'usage':detail.usage,
             'Telephone':detail.telephone,
             'coordination':detail.coordination,
-            'AuthList':[{
-                'OriginProcessId':detail.origin_process_id,
-                'Department':detail.resource_department,
-                'Period':{
-                    'startTime':detail.start_time,
-                    'endTime':detail.end_time
-                },
-                'Authority':detail.authority,
-                'AttrList':detail.attr_list,
-                'DeviceList':detail.resource_list
-            }]
+            # 'AuthList':[{
+            #     'OriginProcessId':detail.origin_process_id,
+            #     'Department':detail.resource_department,
+            #     'Period':{
+            #         'startTime':detail.start_time,
+            #         'endTime':detail.end_time
+            #     },
+            #     'Authority':detail.authority,
+            #     'AttrList':detail.attr_list,
+            #     'DeviceList':detail.resource_list
+            # }]
+            "AuthList":detail.auth_list
         })

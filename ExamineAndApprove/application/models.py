@@ -28,6 +28,7 @@ class ApplicantList(models.Model):
     resource_department = models.CharField(max_length=255, blank=True, null=True)
     resource_list = models.CharField(max_length=255, blank=True, null=True)
     attr_list = models.CharField(max_length=255, blank=True, null=True)
+    auth_list = models.CharField(max_length=10000, blank=True, null=True)
 
     class Meta:
         managed = False
