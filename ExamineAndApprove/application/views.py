@@ -314,9 +314,9 @@ class ResourceList(APIView):
             }]
         }
         ]
-        if department_id==12:
+        if department_id=='12':
             return Response(tree_data)
-        elif department_id==14:
+        elif department_id=='14':
             return Response(tree_data2)
 
 
