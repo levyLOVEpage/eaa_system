@@ -6,7 +6,7 @@ from rest_framework.exceptions import AuthenticationFailed
 import datetime
 from rest_framework.response import Response
 class JwtAuthentication(BaseAuthentication):
-    def authenticate(self, request):
+    def authenticate(self,request):
         token =request.META.get("HTTP_AUTHORIZATION")
         salt = settings.SECRET_KEY
         payload = None

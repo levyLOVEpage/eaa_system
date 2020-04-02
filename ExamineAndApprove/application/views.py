@@ -66,6 +66,7 @@ class MyApply(APIView):
     """
     个人apply页面
     """
+    authentication_classes = []
     def get(self,request,applicant_id,format=None):
         role = UserLogin.objects.filter(id=applicant_id).first()
         role_info = UserLoginSerializer(role)
@@ -103,6 +104,7 @@ class AllApply(APIView):
     """
     所有申请页面
     """
+    authentication_classes = []
     def get(self,request,applicant_id,format=None):
         role = UserLogin.objects.filter(id=applicant_id).first()
         role_info = UserLoginSerializer(role)
@@ -137,6 +139,7 @@ class AllApply(APIView):
                              })
 
 class Apply(APIView):
+    authentication_classes = []
     def put(self,request,*args,**kwargs):
         obj = ApplicantList.objects.get(process_id=request.data['process_id'])
         obj.apply_time=request.data['apply_time']
@@ -165,6 +168,7 @@ class Apply(APIView):
 
 
 class ResourceList(APIView):
+    authentication_classes = []
     def get(self,request,department_id,*args,**kwargs):
 
         tree_data = [
@@ -304,6 +308,7 @@ class ResourceList(APIView):
 
 
 class ResoucreQueryName(APIView):
+    authentication_classes = []
     def post(self,request,*args,**kwargs):
         query = request.data['selected_resource']
         query_list = list(query)
@@ -318,6 +323,7 @@ class ResoucreQueryName(APIView):
         return Response({'data':result_list})
 
 class ReviewerQuery(APIView):
+    authentication_classes = []
     def post(self,request,*args,**kwargs):
         department_id = request.data['department_id']
         query = Department.objects.filter(department_id=department_id)
@@ -343,6 +349,7 @@ class ReviewerQuery(APIView):
                     "manager_name": "总裁办"
                 }})
 class PendingSubmitDetail(APIView):
+    authentication_classes = []
     def get(self,request,process_id,*args,**kwargs):
         detail = ApplicantList.objects.get(process_id=process_id)
         return Response({
