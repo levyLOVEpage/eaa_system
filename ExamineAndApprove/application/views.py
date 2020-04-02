@@ -183,9 +183,8 @@ class Apply(APIView):
 
 class ResourceList(APIView):
     authentication_classes = []
-    def get(self,request,*args,**kwargs):
-        device_query=Device.objects.all()
-        device = serializers.DeviceSerializer(device_query,many=True)
+    def get(self,request,department_id,*args,**kwargs):
+
         tree_data = [
         {
             'key':'10000000',
@@ -250,7 +249,76 @@ class ResourceList(APIView):
             }]
         }
         ]
-        return Response(tree_data)
+
+        tree_data2 = [
+        {
+            'key':'10000000',
+            'title':'中国',
+            'children':[{
+                'key':'35000000',
+                'title':'广东省',
+                'children':[{
+                    'key':'35000001',
+                    'title':'广州市',
+                    'children':[
+                        {
+                            'key':'36009',
+                            'title':'监控摄像头2'
+                        },
+                    ]
+                },
+                    {
+                        'key': '35000002',
+                        'title': '深圳市',
+                        'children': [
+                            {
+                                'key': '36010',
+                                'title': '监控摄像头3'
+                            },
+                        ]
+                    },
+                    {
+                        'key': '35000003',
+                        'title': '中山市',
+                        'children': [
+                            {
+                                'key': '36011',
+                                'title': '监控摄像头4'
+                            },
+                        ]
+                    },
+                {
+                    'key':'36008',
+                    'title':'监控摄像头1',
+                }]
+            },{
+                'key':'36000000',
+                'title':'四川省',
+                'children':[{
+                    'key':'36000001',
+                    'title':'成都市',
+                    'children':[
+                        {
+                            'key':'36013',
+                            'title':'监控摄像头6'
+                        }
+                    ]
+                },
+                {
+                    'key':'36012',
+                    'title':'监控摄像头5',
+                }]
+            },{
+                'key':'36014',
+                'title':'监控摄像头7'
+            }]
+        }
+        ]
+        if department_id==12:
+            return Response(tree_data)
+        elif department_id==14:
+            return Response(tree_data2)
+
 
 
 class ResoucreQueryName(APIView):
