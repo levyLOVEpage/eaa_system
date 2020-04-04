@@ -360,6 +360,7 @@ class PendingSubmitDetail(APIView):
     authentication_classes = []
     def get(self,request,process_id,*args,**kwargs):
         detail = ApplicantList.objects.get(process_id=process_id)
+        auth_list = eval(detail.auth_list)
         return Response({
             'type':detail.type,
             'usage':detail.usage,
@@ -376,7 +377,7 @@ class PendingSubmitDetail(APIView):
             #     'AttrList':detail.attr_list,
             #     'DeviceList':detail.resource_list
             # }]
-            "AuthList":detail.auth_list
+            "AuthList":auth_list
         })
 
 
