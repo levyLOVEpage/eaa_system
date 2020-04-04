@@ -151,6 +151,19 @@ class AllApply(APIView):
 
 class Apply(APIView):
     authentication_classes = []
+    def patch(self,request,*args,**kwargs):
+        obj=ApplicantList.objects.get(process_id=request.data['process_id'])
+        obj.type=request.data['type'],
+        obj.applicant_id=request.data['applicant_id'],
+        obj.applicant_name=request.data['applicant_name'],
+        obj. apply_time=request.data['apply_time'],
+        obj.usage=request.data['usage'],
+        obj.telephone=request.data['telephone'],
+        obj.coordination=request.data['coordination'],
+        obj.auth_list=request.data['AuthList'],
+        obj.status='pendingSubmit'
+        obj.save()
+        return Response({'status': {'code': code.success_code[0], 'msg': code.success_code[1]}})
     def put(self,request,*args,**kwargs):
         if len(request.data['reviewer_id'])==2:
             obj = ApplicantList.objects.get(process_id=request.data['process_id'])
