@@ -36,7 +36,7 @@ class PendingList(APIView):
                              })
         # 部门管理员
         elif role_type == 2:
-            queryset = ApplicantList.objects.filter(Q(reviewer_id=applicant_id),Q(status="pendingSubmit")|Q(status="pendingApprove"))
+            queryset = ApplicantList.objects.filter((Q(reviewer_id=applicant_id)&Q(status="pendingApprove"))|(Q(status="pendingSubmit")&Q(applicant_id=applicant_id)))
             total = queryset.count()
             page_obj = LimitOffset()
             page_list = page_obj.paginate_queryset(queryset=queryset, request=request, view=self)
