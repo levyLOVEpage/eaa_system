@@ -121,7 +121,7 @@ class AllApply(APIView):
                              'data': s.data,
                              'total': total
                              })
-        elif role_type == 1:
+        elif role_type == 3:
             queryset = ApplicantList.objects.filter(Q(applicant_id=applicant_id),Q(status="pendingApprove")|Q(status="normalClose")|Q(status="timeoutClose"))
             total = queryset.count()
             page_obj = LimitOffset()
