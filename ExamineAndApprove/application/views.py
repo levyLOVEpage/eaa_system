@@ -111,7 +111,7 @@ class AllApply(APIView):
         role_type = role_info.data['type']
         # 普通管理员
         if role_type == 2:
-            queryset = ApplicantList.objects.filter(Q(reviewer_id=applicant_id),Q(status="pendingApprove")|Q(status="normalClose")|Q(status="timeoutClose"))
+            queryset = ApplicantList.objects.filter(Q(reviewer_id=applicant_id)|Q(applicant_id=applicant_id),Q(status="pendingApprove")|Q(status="normalClose")|Q(status="timeoutClose"))
             total = queryset.count()
             page_obj = LimitOffset()
             page_list = page_obj.paginate_queryset(queryset=queryset, request=request, view=self)
