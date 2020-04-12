@@ -418,8 +418,8 @@ def get_time_stamp13(datetime_obj):
     return int(date_stamp)
 class ApprovalView(APIView):
     authentication_classes = []
-    def get(self,request,user_id,*args,**kwargs):
-        approval_obj = Approval.objects.filter(user_id=user_id)
+    def get(self,request,process_id,*args,**kwargs):
+        approval_obj = Approval.objects.filter(process_id=process_id)
         s = serializers.ApprovalSerializer(approval_obj,many=True)
         return Response({'status':
                              {'code': code.success_code[0], 'msg': code.success_code[1]},
