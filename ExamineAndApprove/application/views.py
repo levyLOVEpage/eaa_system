@@ -439,6 +439,11 @@ class ApprovalView(APIView):
         print(apply_time)
         apply_stamp = get_time_stamp13(apply_time)
         process_stamp = arrival_stamp - apply_stamp
+        if request.data['solution']=='reject':
+            applicant_obj.status='pendingSubmit'
+        elif request.data['solution'] == 'pass' or request.data['solution']=='close':
+            applicant_obj.status ='normalClose'
+        applicant_obj.save()
         obj  = Approval(
             process_id = request.data['process_id'],
             task_name = task_name,
