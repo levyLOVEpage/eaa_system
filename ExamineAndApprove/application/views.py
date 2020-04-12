@@ -1,4 +1,4 @@
-from application.models import ApplicantList,Device,Department,Region
+from application.models import ApplicantList,Device,Department,Region,Approval
 from common.models import UserLogin
 from application import serializers
 from common.serializers import UserLoginSerializer
@@ -404,4 +404,50 @@ class PendingSubmitDetail(APIView):
             "AuthList":auth_list
         })
 
-
+def get_time_stamp13(datetime_obj):
+    #转换为时间戳
+    #时间戳长度13位
+    import time
+    dt = datetime.datetime.strptime(str(datetime_obj), '%Y-%m-%d %H:%M:%S')  # result从数据库中读出来的标准格式时间数据
+    # # 10位，时间点相当于从1.1开始的当年时间编号
+    date_stamp = str(int(time.mktime(dt.timetuple())))
+    # # 3位，微秒
+    data_microsecond = str("%06d" % dt.microsecond)[0:3]
+    # date_stamp是个列表，将每个date_stamp逐个append到列表列表中再写入到数据库里，或者每个直接写入
+    date_stamp = date_stamp + data_microsecond
+    return int(date_stamp)
+class ApprovalView(APIView):
+    authentication_classes = []
+    def get(self,request,user_id,*args,**kwargs):
+        approval_obj = Approval.objects.filter(user_id=user_id)
+        s = serializers.ApprovalSerializer(approval_obj,many=True)
+        return Response({'status':
+                             {'code': code.success_code[0], 'msg': code.success_code[1]},
+                         'applyRecord': s.data,
+                         })
+    def post(self,request,*args,**kwargs):
+        role = UserLogin.objects.get(id=request.data['user_id'])
+        applicant_obj  = ApplicantList.objects.get(process_id=request.data['process_id'])
+        task_name = ''
+        if role.type == 2:
+            task_name = '部门审核'
+        elif role.type == 1:
+            task_name = '平台审核'
+        arrival_time = request.data['arrival_time']
+        arrival_stamp = get_time_stamp13(arrival_time)
+        apply_time = str(applicant_obj.apply_time).replace("+00:00",'')
+        print(apply_time)
+        apply_stamp = get_time_stamp13(apply_time)
+        process_stamp = arrival_stamp - apply_stamp
+        obj  = Approval(
+            process_id = request.data['process_id'],
+            task_name = task_name,
+            arrival_time=arrival_stamp,
+            process_time= process_stamp,
+            user_id= request.data['user_id'],
+            user_name = request.data['user_name'],
+            solution= request.data['solution'],
+            note= request.data['note']
+        )
+        obj.save()
+        return Response({'status': {'code': code.success_code[0], 'msg': code.success_code[1]}})

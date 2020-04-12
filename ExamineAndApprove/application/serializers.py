@@ -15,3 +15,8 @@ class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Department
         fields = '__all__'
+
+class ApprovalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Approval
+        fields = '__all__'

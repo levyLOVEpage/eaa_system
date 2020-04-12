@@ -36,6 +36,22 @@ class ApplicantList(models.Model):
         db_table = 'applicant_list'
 
 
+class Approval(models.Model):
+    approval_id = models.AutoField(primary_key=True)
+    process_id = models.IntegerField(blank=True, null=True)
+    task_name = models.CharField(max_length=255, blank=True, null=True)
+    arrival_time = models.BigIntegerField(blank=True, null=True)
+    process_time = models.BigIntegerField(blank=True, null=True)
+    user_id = models.CharField(max_length=30, blank=True, null=True)
+    user_name = models.CharField(max_length=255, blank=True, null=True)
+    solution = models.CharField(max_length=255, blank=True, null=True)
+    note = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'approval'
+
+
 class Department(models.Model):
     id = models.IntegerField(primary_key=True)
     department_id = models.CharField(max_length=255, blank=True, null=True)
