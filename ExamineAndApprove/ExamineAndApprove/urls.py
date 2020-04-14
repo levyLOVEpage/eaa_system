@@ -19,6 +19,7 @@ from common import views
 from application import views as application_views
 urlpatterns = [
     path('eaa/login', views.Login.as_view()),
+    re_path(r'^eaa/application/resource/origin/(?P<department_id>\w{1,8})$', application_views.ResourceOriginList.as_view()),
     re_path(r'^eaa/application/pending/(?P<applicant_id>\w{1,8})$',application_views.PendingList.as_view()),
     re_path(r'^eaa/application/myapply/(?P<applicant_id>\w{1,8})$',application_views.MyApply.as_view()),
     re_path(r'^eaa/application/all/(?P<applicant_id>\w{1,8})$',application_views.AllApply.as_view()),

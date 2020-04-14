@@ -20,3 +20,8 @@ class ApprovalSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Approval
         fields = '__all__'
+
+class ApplicantListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.ApplicantList
+        fields = '__all__'

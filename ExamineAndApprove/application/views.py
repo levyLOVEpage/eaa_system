@@ -198,6 +198,32 @@ class Apply(APIView):
         obj.save()
         return Response({'process_id':obj.process_id,'status':{'code':code.success_code[0],'msg':code.success_code[1]}})
 
+class ResourceOriginList(APIView):
+    authentication_classes = []
+    def get(self, request, department_id, format=None):
+        obj = Department.objects.filter(department_id=department_id)
+        s_obj = serializers.DepartmentSerializer(obj,many=True)
+        s_obj =list(s_obj.data)
+        result = []
+        for i in range(len(s_obj)):
+            query = ApplicantList.objects.filter(applicant_id=s_obj[i]['manager_id']).filter(status='normalClose')
+            query = list(serializers.ApplicantListSerializer(query,many=True).data)
+            for j in range(len(query)):
+                query[j]['auth_list'] = eval(query[j]['auth_list'])
+
+                result.append({
+                    "OriginProcessId":query[j]['process_id'],
+                    "Department":department_id,
+                    "ApplicantId":query[j]['applicant_id'],
+                    "ApplyTime":query[j]['apply_time'],
+                    "Period":query[j]['auth_list'][0]['period'],
+                    "Authority":query[j]['auth_list'][0]['authority'],
+                    "AttrList":query[j]['auth_list'][0]['region'],
+                    "DeviceList":query[j]['auth_list'][0]['device_list']
+                })
+        return Response({
+            "data":result
+        })
 
 class ResourceList(APIView):
     authentication_classes = []
